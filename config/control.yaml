@@ -1,0 +1,6 @@
+servo:
+  max_speed: 8.0
+  min_angle: -90
+  max_angle: 90
+camera:
+  fov_deg: 160

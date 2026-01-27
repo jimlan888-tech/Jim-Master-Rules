@@ -1,0 +1,9 @@
+deadzone: 3.0
+pitch:
+  kd: 0.06
+  ki: 0.02
+  kp: 0.8
+yaw:
+  kd: 0.06
+  ki: 0.02
+  kp: 0.8

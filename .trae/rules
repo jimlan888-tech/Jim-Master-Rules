@@ -1,0 +1,47 @@
+# Windows Environment NPM Installation Rules
+
+当在 Windows 环境下执行 npm 或 pnpm 安装命令时，遵循以下强制规则：
+
+1. 优先使用国内镜像
+   - 不要使用默认的官方源
+   - 始终添加 `--registry=https://registry.npmmirror.com`
+
+2. 跳过代理设置
+   - 即使系统报错提示代理问题，也不要尝试配置 proxy
+   - 直接在命令中添加 `--no-proxy` 参数
+
+3. 权限预警
+   - 如果安装路径涉及 `C:\Program Files` 或 `D:\Program Files` 且失败
+   - 立即提醒“开启管理员权限”，不要尝试其他修复
+
+典型命令示例:
+```bash
+npm install -g <package> --registry=https://registry.npmmirror.com --no-proxy
+```
+
+# Safe-Write-Guard
+
+1. 写入任何文件前，必须先检查目标路径是否存在（存在=已有文件/目录）。
+2. 若已存在，则默认不覆盖；优先采用“追加/合并”策略，保持历史内容不丢失。
+3. `.trae/rules` 文件新增规则必须采用“追加分节”的方式，禁止整体覆盖。
+4. 只有在用户明确要求“覆盖写入”且已说明不需要保留旧内容时，才允许覆盖；覆盖前需先读取并备份原文（或由版本控制保障可回滚）。
+
+[Rule: Sports-Tracker-Env]
+- NPM 安装：在树莓派/Windows 环境安装库时，必须强制添加 `--registry=https://registry.npmmirror.com` 和 `--no-proxy`。
+- 权限预警：涉及 GPIO 或系统路径操作失败时，优先提醒“开启管理员权限（sudo）”，禁止盲目修改逻辑。
+
+[Rule: Sports-Tracker-Physics]
+- 增量追踪 (No-Snap)：严禁使用绝对坐标赋值。旋转必须基于增量累加，并经过平滑逻辑审核，杜绝画面跳变。
+- DPI 补偿：位移计算必须包含 `devicePixelRatio` 补偿，确保不同分辨率下的物理手感一致。
+- 输入熔断 (Fuse)：单帧位移超过 100 像素时必须触发熔断丢弃，防止误报导致电机猛烈甩头。
+
+[Rule: Sports-Tracker-Autopilot]
+- 全权自动驾驶 (Zero-Touch)：仿真脚本严禁包含 `input()` 或任何人工阻塞逻辑。所有等待必须通过 Timer 或信号处理。
+- 硬性指标 (Data-Driven)：拒绝“感觉良好”，必须以“物理延迟 < 5px”作为数学成功指标，并输出“代码审计报告”分析数学链路。
+
+[Rule: Rapid-Environment-Bootstrap]
+- 环境审计：运行 `git config --global --unset-all url."https://ghproxy.com/".insteadOf` 清理潜在干扰。
+- 建立连接：`git init` → `git remote add origin https://github.com/jimlan888-tech/Jim-Master-Rules.git`
+- 物理上传：`git add .` → `git commit -m "New PC Bootstrap"` → `git push -u origin main`
+- 闭环验证：运行 `git ls-remote origin` 并展示哈希值。
+- 异常处理：若遇权限或认证问题，立即提醒开启管理员权限（sudo/管理员）或执行 GitHub 登录。
