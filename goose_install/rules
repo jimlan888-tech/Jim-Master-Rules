@@ -37,3 +37,16 @@ Checklist:
 - [ ] Admin override for config writes when needed
 - [ ] Model ID verified against OpenRouter catalog
 ```
+
+## 经验与教训（规则化）
+- 终端与命令：在 Windows 使用 PowerShell；不要使用 `&&` 作为分隔，使用分号或逐条执行。
+- 代理与网络：先用 `curl.exe -I https://openrouter.ai/api/v1/models` 验证网络，再将 `HTTP_PROXY`/`HTTPS_PROXY` 持久化到 `$PROFILE`。
+- 提供方与密钥：统一使用 `provider=openrouter`；清理旧的 ANTHROPIC 变量，确保仅存在有效 `OPENROUTER_API_KEY`。
+- 额度控制：默认 `GOOSE_MAX_TOKENS=2000`；需要提高时先评估费用风险，避免触发 402。
+- 配置写入权限：Roaming 路径不可写时，使用管理员权限从 `%LOCALAPPDATA%\\Temp` 复制覆盖到 `%APPDATA%\\Block\\goose\\config\\config.yaml`。
+- 模型选择与回退：优先选用已验证的模型 ID（如 `google/gemini-2.0-flash-001`/`moonshotai/kimi-k2`）；异常时快速回退到稳定模型。
+- Git 同步校验：推送前用 `git ls-files` 和本地读取文件前 10 行确认非空与正确内容。
+- 提交规范：提交信息清晰表达变更意图；变更粒度适中，便于审计与回滚。
+- 换行符：接受 Git 的 CRLF/LF 正常化提示，保持仓库内换行风格一致。
+- 安全与密钥：不在仓库中提交任何密钥或敏感信息；仅在环境变量中注入。
+- 安装策略：npm 安装失败或网络受限时，使用官方 Release 压缩包方式安装 goose。
